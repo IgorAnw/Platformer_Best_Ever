@@ -12,3 +12,6 @@ class character(pygame.sprite.Sprite):
     
     def move(self, direction):
         self.rect.x += 10 * direction
+    
+    def fall(self):
+        self.rect.y += 5

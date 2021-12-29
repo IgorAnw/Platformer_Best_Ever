@@ -8,7 +8,6 @@ clock = pygame.time.Clock()
 pygame.init()
 screen = pygame.display.set_mode([960, 540])
 player = Character(all_sprites)
-is_jump = False
 
 while True:
     screen.fill('#000000')
@@ -19,16 +18,13 @@ while True:
             pygame.quit()
             sys.exit()
 
-    if pygame.key.get_pressed()[pygame.K_d]:
+    if pygame.key.get_pressed()[pygame.K_RIGHT]:
         player.move(1)
-    if pygame.key.get_pressed()[pygame.K_a]:
+    if pygame.key.get_pressed()[pygame.K_LEFT]:
         player.move(-1)
-    if pygame.key.get_pressed()[pygame.K_SPACE]:
+    if pygame.key.get_pressed()[pygame.K_z]:
         player.jump()
 
-    if is_jump:
-        player.jump()
-        is_jump = False
     player.fall()
 
     clock.tick(60)

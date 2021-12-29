@@ -1,17 +1,19 @@
 import pygame
 import sys
 from player import Character
+from constants import WIDTH, HEIGHT
 
-all_sprites = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
+obstacles_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
 
 pygame.init()
-screen = pygame.display.set_mode([960, 540])
-player = Character(all_sprites)
+screen = pygame.display.set_mode([WIDTH, HEIGHT])
+player = Character(player_group)
 
 while True:
     screen.fill('#000000')
-    all_sprites.draw(screen)
+    player_group.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -25,7 +27,8 @@ while True:
     if pygame.key.get_pressed()[pygame.K_z]:
         player.jump()
 
-    player.fall()
+    if not pygame.sprite.spritecollideany(player, obstacles_group):
+        player.fall()
 
     clock.tick(60)
     pygame.display.flip()

@@ -27,8 +27,10 @@ while True:
     if pygame.key.get_pressed()[pygame.K_z]:
         player.jump()
 
-    if not pygame.sprite.spritecollideany(player, obstacles_group):
+    if pygame.sprite.spritecollideany(player, obstacles_group) is None:
         player.fall()
+    elif pygame.sprite.spritecollideany(player, obstacles_group).rect.top == player.rect.bottom:
+        pass
 
     clock.tick(60)
     pygame.display.flip()

@@ -1,4 +1,5 @@
 import pygame
+from constants import JUMPING_SPEED, WALK_SPEED, FALLING_SPEED
 
 
 class Character(pygame.sprite.Sprite):
@@ -12,10 +13,10 @@ class Character(pygame.sprite.Sprite):
         self.rect.y = 200
     
     def move(self, direction):
-        self.rect.x += 5 * direction
+        self.rect.x += WALK_SPEED * direction
     
     def fall(self):
-        self.rect.y += 5
+        self.rect.y += FALLING_SPEED
 
     def jump(self):
-        self.rect.y -= 12
+        self.rect.y -= JUMPING_SPEED

@@ -34,7 +34,6 @@ while True:
     if pygame.key.get_pressed()[pygame.K_z]:
         player.jump()
 
-    enemy.update(pygame.sprite.spritecollideany(enemy, obstacles_group))
     enemy.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
     player.update(pygame.sprite.spritecollideany(player, obstacles_group))
     clock.tick(60)

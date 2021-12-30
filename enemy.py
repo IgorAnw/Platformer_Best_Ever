@@ -1,5 +1,5 @@
 import pygame
-from constants import WALK_SPEED, FALLING_SPEED
+from constants import ENEMY_WALK_SPEED, FALLING_SPEED
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -20,7 +20,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.direction = -1
             elif inform.rect.left > self.rect.left:
                 self.direction = 1
-            self.rect.x += 3 * self.direction
+            self.rect.x += ENEMY_WALK_SPEED * self.direction
 
     def update(self, inform):
         if inform is None:

@@ -11,12 +11,18 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 200
         self.rect.y = 200
-    
+        self.y_speed = 0
+
     def move(self, direction):
         self.rect.x += WALK_SPEED * direction
-    
-    def fall(self):
-        self.rect.y += FALLING_SPEED
+
+    def update(self, inform):
+        if inform is None:
+            self.y_speed += FALLING_SPEED
+            self.rect.y += self.y_speed
+        elif inform.rect.top == self.rect.bottom:
+            pass
 
     def jump(self):
-        self.rect.y -= JUMPING_SPEED
+        self.rect.y -= 1
+        self.y_speed = -1 * JUMPING_SPEED

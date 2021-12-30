@@ -12,6 +12,7 @@ pygame.init()
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 player = Character(player_group)
 obstacle = Platform(obstacles_group)
+obstacle1 = Platform(obstacles_group)
 qq_r = False
 qq_l = False
 
@@ -23,22 +24,12 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                qq_r = True
-            if event.key == pygame.K_LEFT:
-                qq_l = True
-            if event.key == pygame.K_z:
-                player.jump()
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
-                qq_r = False
-            if event.key == pygame.K_LEFT:
-                qq_l = False
-    if qq_r:
+    if pygame.key.get_pressed()[pygame.K_RIGHT]:
         player.move(1)
-    if qq_l:
+    if pygame.key.get_pressed()[pygame.K_LEFT]:
         player.move(-1)
+    if pygame.key.get_pressed()[pygame.K_z]:
+        player.jump()
     player.update(pygame.sprite.spritecollideany(player, obstacles_group))
     clock.tick(60)
     pygame.display.flip()

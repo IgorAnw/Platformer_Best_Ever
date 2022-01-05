@@ -20,8 +20,9 @@ class Character(pygame.sprite.Sprite):
         if inform is None:
             self.y_speed += FALLING_SPEED
             self.rect.y += self.y_speed
-        elif inform.rect.top == self.rect.bottom:
-            pass
+        else:
+            self.rect.y += inform.rect.top - self.rect.bottom + 1
+            self.y_speed = 0
 
     def jump(self):
         self.rect.y -= 1

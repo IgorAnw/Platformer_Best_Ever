@@ -20,6 +20,7 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = 200
         self.rect.y = 200
         self.y_speed = 0
+        self.n_jump = False
 
     def move(self, direction):
         self.direction = direction
@@ -32,6 +33,7 @@ class Character(pygame.sprite.Sprite):
         else:
             self.rect.y += inform.rect.top - self.rect.bottom + 1
             self.y_speed = 0
+            self.n_jump = 2
 
         # Отвечает за ближнюю атаку
         if self.is_melee_attacking:
@@ -55,8 +57,10 @@ class Character(pygame.sprite.Sprite):
         # Доработать, чтобы враг получал только 1 еденицу урона за раз
 
     def jump(self):
-        self.rect.y -= 1
-        self.y_speed = -1 * JUMPING_SPEED
+        if self.n_jump >= 1:
+            self.rect.y -= 1
+            self.y_speed = -1 * JUMPING_SPEED
+            self.n_jump -= 1
 
     # Начало и конец атаки героя
     def attack_start(self, screen):

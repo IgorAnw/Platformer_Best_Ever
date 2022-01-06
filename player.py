@@ -12,6 +12,7 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = 200
         self.rect.y = 200
         self.y_speed = 0
+        self.n_jump = False
 
     def move(self, direction):
         self.rect.x += WALK_SPEED * direction
@@ -23,7 +24,10 @@ class Character(pygame.sprite.Sprite):
         else:
             self.rect.y += inform.rect.top - self.rect.bottom + 1
             self.y_speed = 0
+            self.n_jump = 2
 
     def jump(self):
-        self.rect.y -= 1
-        self.y_speed = -1 * JUMPING_SPEED
+        if self.n_jump >= 1:
+            self.rect.y -= 1
+            self.y_speed = -1 * JUMPING_SPEED
+            self.n_jump -= 1

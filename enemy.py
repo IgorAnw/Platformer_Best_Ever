@@ -7,6 +7,9 @@ class Enemy(pygame.sprite.Sprite):
     image.fill(pygame.Color('green'))
     direction = 1
 
+    is_alive = True
+    health_points = 3
+
     def __init__(self, group):
         super().__init__(group)
         self.rect = self.image.get_rect()
@@ -29,6 +32,12 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.rect.y += inform.rect.top - self.rect.bottom + 1
             self.y_speed = 0
+
+        if self.health_points == 0:
+            self.is_alive = False
+
+    def taking_damage(self):
+        self.health_points -= 1
 
     def move(self, inform):
         self.update(inform)

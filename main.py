@@ -25,7 +25,9 @@ while True:
     screen.fill('black')
     player_group.draw(screen)
     obstacles_group.draw(screen)
-    enemy_group.draw(screen)
+
+    if enemy.is_alive:
+        enemy_group.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -35,11 +37,23 @@ while True:
             if event.key == pygame.K_z:
                 player.jump()
 
+        # Отвечает за ближнюю атаку
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_x:
+                player.attack_start(screen)
+                pygame.time.set_timer(ATTACK_END, 250, loops=1)
+
+        if event.type == ATTACK_END:
+            player.attack_end()
+
     if pygame.key.get_pressed()[pygame.K_RIGHT]:
         player.move(1)
     if pygame.key.get_pressed()[pygame.K_LEFT]:
         player.move(-1)
+    if pygame.key.get_pressed()[pygame.K_UP]:
+        player.move(0)
 
+    player.damage(enemy_group)
     enemy.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
     player.update(pygame.sprite.spritecollideany(player, obstacles_group))
     clock.tick(60)

@@ -3,10 +3,13 @@ from constants import ENEMY_WALK_SPEED, FALLING_SPEED
 
 
 class Enemy(pygame.sprite.Sprite):
+    # внешний вид
     image = pygame.Surface([50, 50])
     image.fill(pygame.Color('green'))
-    direction = 1
 
+    # перемнные
+    direction = 1
+    is_immortal = False
     is_alive = True
     health_points = 3
 
@@ -33,11 +36,19 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y += inform.rect.top - self.rect.bottom + 1
             self.y_speed = 0
 
-        if self.health_points == 0:
+        if self.health_points < 1:
             self.is_alive = False
 
+    # Почему то умирает на 1 удар быстрее нужного
     def taking_damage(self):
-        self.health_points -= 1
+        if not self.is_immortal:
+            self.health_points -= 1
+            self.is_immortal = True
+            self.image.fill((10, 100, 10))
+
+    def not_immortal(self):
+        self.image.fill((0, 255, 0))
+        self.is_immortal = False
 
     def move(self, inform):
         self.update(inform)

@@ -23,7 +23,8 @@ for i in range(10):
 
 while True:
     screen.fill('black')
-    player_group.draw(screen)
+    if player.is_alive:
+        player_group.draw(screen)
     obstacles_group.draw(screen)
 
     if enemy.is_alive:
@@ -46,6 +47,9 @@ while True:
         if event.type == ATTACK_END:
             player.attack_end()
 
+        if event.type == PLAYER_IMMORTALITY:
+            player.not_immortal()
+
     if pygame.key.get_pressed()[pygame.K_RIGHT]:
         player.move(1)
     if pygame.key.get_pressed()[pygame.K_LEFT]:
@@ -54,8 +58,10 @@ while True:
         player.move(0)
 
     player.damage(enemy_group)
-    enemy.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
+    if player.taking_damage(enemy_group):
+        pygame.time.set_timer(PLAYER_IMMORTALITY, 1000, loops=1)
     player.update(pygame.sprite.spritecollideany(player, obstacles_group))
-    clock.tick(60)
+    enemy.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
 
+    clock.tick(60)
     pygame.display.flip()

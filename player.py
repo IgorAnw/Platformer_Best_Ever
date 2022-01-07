@@ -5,14 +5,20 @@ from enemy import Enemy
 
 
 class Character(pygame.sprite.Sprite):
+    # внешний вид
     image = pygame.Surface([50, 50])
     image.fill(pygame.Color('white'))
 
+    # Переменные
     melee_group = pygame.sprite.Group()
     melee_sprite = MeleeAttack(melee_group)
     screen = None
     is_melee_attacking = False
     direction = 1
+    enemy_group = None
+    is_immortal = False
+    is_alive = True
+    health_points = 5
 
     def __init__(self, group):
         super().__init__(group)
@@ -50,11 +56,14 @@ class Character(pygame.sprite.Sprite):
                 self.melee_sprite.rect.y = self.rect.top
                 self.melee_group.draw(self.screen)
 
+        if self.health_points < 1:
+            self.is_alive = False
+
     def damage(self, enemy_group):
         inform = pygame.sprite.spritecollideany(self.melee_sprite, enemy_group)
+        self.enemy_group = enemy_group
         if type(inform) == Enemy:
             inform.taking_damage()
-        # Доработать, чтобы враг получал только 1 еденицу урона за раз
 
     def jump(self):
         if self.n_jump >= 1:
@@ -69,3 +78,17 @@ class Character(pygame.sprite.Sprite):
 
     def attack_end(self):
         self.is_melee_attacking = False
+        for i in self.enemy_group.sprites():
+            i.not_immortal()
+
+    def taking_damage(self, enemy_group):
+        if type(pygame.sprite.spritecollideany(self, enemy_group)) == Enemy:
+            if not self.is_immortal:
+                self.health_points -= 1
+            self.is_immortal = True
+            self.image.fill(pygame.Color('blue'))
+            return True
+
+    def not_immortal(self):
+        self.is_immortal = False
+        self.image.fill(pygame.Color('white'))

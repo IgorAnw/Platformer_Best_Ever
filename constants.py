@@ -15,3 +15,4 @@ BRICK_SIZE = 20
 
 # пользовательские ивенты
 ATTACK_END = USEREVENT + 1
+PLAYER_IMMORTALITY = USEREVENT + 1

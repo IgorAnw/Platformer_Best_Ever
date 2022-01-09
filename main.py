@@ -27,10 +27,13 @@ while True:
         player_group.draw(screen)
     obstacles_group.draw(screen)
 
-    if enemy.is_alive:
-        enemy_group.draw(screen)
-        for enemy in enemy_group.sprites():
-            enemy.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
+    enemy_group.draw(screen)
+    for i in enemy_group.sprites():
+        if i.is_alive:
+            i.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
+        else:
+            i.rect.x = -200
+            i.rect.y = -200
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

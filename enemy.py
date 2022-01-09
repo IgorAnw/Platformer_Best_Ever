@@ -13,29 +13,26 @@ class Enemy(pygame.sprite.Sprite):
     is_alive = True
     health_points = 3
 
-    def __init__(self, group):
+    def __init__(self, group, x, y, speed_x, speed_y, time):
         super().__init__(group)
         self.rect = self.image.get_rect()
-        self.rect.x = 300
-        self.rect.y = 200
-        self.y_speed = 0
+        self.rect.x = x
+        self.rect.y = y
+        self.speed_x = speed_x
+        self.speed_y = speed_y
+        self.time = time
+        self.rear = False
+        self.timer = 0
 
-    def walk(self, inform):
-        if inform is not None:
-            if inform.rect.right < self.rect.right:
-                self.direction = -1
-            elif inform.rect.left > self.rect.left:
-                self.direction = 1
-            self.rect.x += ENEMY_WALK_SPEED * self.direction
-
-    def update(self, inform):
-        if inform is None:
-            self.y_speed += FALLING_SPEED
-            self.rect.y += self.y_speed
-        else:
-            self.rect.y += inform.rect.top - self.rect.bottom + 1
-            self.y_speed = 0
-
+    def move(self):
+        self.timer += 1
+        if self.timer == self.time:
+            self.timer = 0
+            self.speed_x *= -1
+            self.speed_y *= -1
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+        
         if self.health_points < 1:
             self.is_alive = False
 

@@ -30,7 +30,7 @@ while True:
     enemy_group.draw(screen)
     for i in enemy_group.sprites():
         if i.is_alive:
-            i.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
+            i.move()
         else:
             i.rect.x = -200
             i.rect.y = -200

@@ -85,9 +85,9 @@ class Character(pygame.sprite.Sprite):
         if type(pygame.sprite.spritecollideany(self, enemy_group)) == Enemy:
             if not self.is_immortal:
                 self.health_points -= 1
-            self.is_immortal = True
-            self.image.fill(pygame.Color('blue'))
-            return True
+                self.is_immortal = True
+                self.image.fill(pygame.Color('blue'))
+                return True
 
     def not_immortal(self):
         self.is_immortal = False

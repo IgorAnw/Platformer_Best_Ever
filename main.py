@@ -29,6 +29,8 @@ while True:
 
     if enemy.is_alive:
         enemy_group.draw(screen)
+        for enemy in enemy_group.sprites():
+            enemy.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -61,7 +63,6 @@ while True:
     if player.taking_damage(enemy_group):
         pygame.time.set_timer(PLAYER_IMMORTALITY, 1000, loops=1)
     player.update(pygame.sprite.spritecollideany(player, obstacles_group))
-    enemy.move(pygame.sprite.spritecollideany(enemy, obstacles_group))
 
     clock.tick(60)
     pygame.display.flip()

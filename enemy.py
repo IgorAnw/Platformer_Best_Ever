@@ -1,5 +1,5 @@
 import pygame
-from constants import ENEMY_WALK_SPEED, FALLING_SPEED
+from constants import FALLING_SPEED
 
 
 class Enemy(pygame.sprite.Sprite):

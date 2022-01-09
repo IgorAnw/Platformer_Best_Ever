@@ -13,7 +13,7 @@ clock = pygame.time.Clock()
 pygame.init()
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 player = Character(player_group)
-enemy = Enemy(enemy_group)
+enemy = Enemy(enemy_group, 100, 100, 2, 1, 100)
 for i in range(38):
     obstacle = Brick(obstacles_group, 100 + i * BRICK_SIZE, 500)
 for i in range(10):

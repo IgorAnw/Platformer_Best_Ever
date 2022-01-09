@@ -46,7 +46,3 @@ class Enemy(pygame.sprite.Sprite):
     def not_immortal(self):
         self.image.fill((0, 255, 0))
         self.is_immortal = False
-
-    def move(self, inform):
-        self.update(inform)
-        self.walk(inform)

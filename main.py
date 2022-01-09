@@ -4,11 +4,13 @@ from player import Character
 from constants import *
 from brick import Brick
 from enemy import Enemy
+from start_screen import start_screen
 
 player_group = pygame.sprite.Group()
 obstacles_group = pygame.sprite.Group()
 enemy_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
+is_start_screen = True
 
 pygame.init()
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
@@ -45,6 +47,7 @@ while True:
 
         # Отвечает за ближнюю атаку
         if event.type == pygame.KEYDOWN:
+            is_start_screen = False
             if event.key == pygame.K_x:
                 player.attack_start(screen)
                 pygame.time.set_timer(ATTACK_END, 250, loops=1)
@@ -67,5 +70,8 @@ while True:
         pygame.time.set_timer(PLAYER_IMMORTALITY, 1000, loops=1)
     player.update(pygame.sprite.spritecollideany(player, obstacles_group))
 
-    clock.tick(60)
+    if is_start_screen:
+        start_screen(screen)
+
+    clock.tick(FPS)
     pygame.display.flip()

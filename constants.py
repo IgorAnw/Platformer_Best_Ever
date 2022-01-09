@@ -3,6 +3,7 @@ from pygame import USEREVENT
 # настройки экрана
 WIDTH = 960
 HEIGHT = 540
+FPS = 60
 
 # настройки скорости передвижения
 WALK_SPEED = 5

@@ -1,12 +1,12 @@
 import pygame
-from constants import JUMPING_SPEED, WALK_SPEED, FALLING_SPEED
+from constants import *
 from melee_attack import MeleeAttack
 from enemy import Enemy
 
 
 class Character(pygame.sprite.Sprite):
     # внешний вид
-    image = pygame.Surface([50, 50])
+    image = pygame.Surface([PLAYER_WIDTH, PLAYER_HEIGHT])
     image.fill(pygame.Color('white'))
 
     # Переменные
@@ -24,22 +24,39 @@ class Character(pygame.sprite.Sprite):
         super().__init__(group)
         self.rect = self.image.get_rect()
         self.rect.x = 200
-        self.rect.y = 200
+        self.rect.y = 100
         self.y_speed = 0
         self.n_jump = False
+        self.x_ram = self.rect.x
+        self.y_ram = self.rect.y
 
     def move(self, direction):
         self.direction = direction
+        self.x_ram = self.rect.x
         self.rect.x += WALK_SPEED * direction
 
     def update(self, inform):
         if inform is None:
             self.y_speed += FALLING_SPEED
+            self.y_ram = self.rect.y
             self.rect.y += self.y_speed
-        else:
+        if inform and self.y_ram <= self.rect.y and self.y_ram + PLAYER_HEIGHT <= inform.rect.top:
             self.rect.y += inform.rect.top - self.rect.bottom + 1
             self.y_speed = 0
             self.n_jump = 2
+        elif inform and self.y_ram > self.rect.y and self.y_ram >= inform.rect.bottom:
+            self.rect.y += inform.rect.bottom - self.rect.y + 1
+            self.y_speed = 0
+        elif inform and self.x_ram >= self.rect.x:
+            self.rect.x += inform.rect.right - self.rect.left
+            self.y_speed += FALLING_SPEED
+            self.y_ram = self.rect.y
+            self.rect.y += self.y_speed
+        elif inform and self.x_ram <= self.rect.x:
+            self.rect.x -= self.rect.right - inform.rect.left
+            self.y_speed += FALLING_SPEED
+            self.y_ram = self.rect.y
+            self.rect.y += self.y_speed
 
         # Отвечает за ближнюю атаку
         if self.is_melee_attacking:

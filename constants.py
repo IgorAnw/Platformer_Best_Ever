@@ -9,7 +9,6 @@ FPS = 60
 WALK_SPEED = 5
 FALLING_SPEED = 0.5
 JUMPING_SPEED = 12
-ENEMY_WALK_SPEED = 3
 
 # настройки лоцкации
 BRICK_SIZE = 20
@@ -17,3 +16,7 @@ BRICK_SIZE = 20
 # пользовательские ивенты
 ATTACK_END = USEREVENT + 1
 PLAYER_IMMORTALITY = USEREVENT + 1
+
+# размеры игрока
+PLAYER_WIDTH = 50
+PLAYER_HEIGHT = 50

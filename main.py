@@ -4,7 +4,7 @@ from player import Character
 from constants import *
 from brick import Brick
 from enemy import Enemy
-from start_screen import start_screen
+from Interface import *
 from location import Location
 import random
 
@@ -17,13 +17,17 @@ def random_path():
     return path
 
 
+pygame.init()
 player_group = pygame.sprite.Group()
 obstacles_group = pygame.sprite.Group()
 enemy_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
-is_start_screen = True
 
-pygame.init()
+start_screen = StartScreen()
+dead_screen = DeadScreen()
+is_start_screen = True
+is_dead_screen = False
+
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 player = Character(player_group)
 order_now = 0
@@ -35,6 +39,8 @@ while True:
     screen.fill('black')
     if player.is_alive:
         player_group.draw(screen)
+    else:
+        is_dead_screen = True
     if player.rect.center[0] > WIDTH:
         order_now += 1
         obstacles_group = pygame.sprite.Group()
@@ -66,6 +72,8 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_z:
                 player.jump()
+                if is_dead_screen:
+                    dead_screen.activate()
 
         # Отвечает за ближнюю атаку
         if event.type == pygame.KEYDOWN:
@@ -79,6 +87,10 @@ while True:
 
         if event.type == PLAYER_IMMORTALITY:
             player.not_immortal()
+
+        if event.type == pygame.KEYDOWN:
+            if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_dead_screen:
+                dead_screen.change()
 
     if pygame.key.get_pressed()[pygame.K_RIGHT]:
         player.move(1)
@@ -95,7 +107,9 @@ while True:
     player.update(pygame.sprite.spritecollideany(player, obstacles_group))
 
     if is_start_screen:
-        start_screen(screen)
+        start_screen.show(screen)
+    if is_dead_screen:
+        dead_screen.show(screen)
 
     clock.tick(FPS)
     pygame.display.flip()

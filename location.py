@@ -18,5 +18,5 @@ class Location:
             for i in self.map_text[27:]:
                 args = i.split()
                 enemy = Enemy(self.enemy_group, int(args[0]), int(args[1]), int(args[2]), int(args[3]), int(args[4]))
-        finally:
+        except Exception:
             pass

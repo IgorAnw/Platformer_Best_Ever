@@ -109,3 +109,7 @@ class Character(pygame.sprite.Sprite):
     def not_immortal(self):
         self.is_immortal = False
         self.image.fill(pygame.Color('white'))
+
+    def move_to(self, x, y):
+        self.rect.x = x
+        self.rect.y = y

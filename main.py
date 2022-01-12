@@ -6,6 +6,16 @@ from brick import Brick
 from enemy import Enemy
 from start_screen import start_screen
 from location import Location
+import random
+
+
+def random_path():
+    path = '0'
+    n = 5
+    for i in range(5):
+        path += str(random.randint(1, 5))
+    return path
+
 
 player_group = pygame.sprite.Group()
 obstacles_group = pygame.sprite.Group()
@@ -16,16 +26,31 @@ is_start_screen = True
 pygame.init()
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 player = Character(player_group)
-enemy = Enemy(enemy_group, 100, 450, 2, 0, 400)
-q = Location(obstacles_group)
-q.build()
+order_now = 0
+pathing = random_path()
+loc = Location(obstacles_group, enemy_group, pathing[order_now])
+loc.build()
 
 while True:
     screen.fill('black')
     if player.is_alive:
         player_group.draw(screen)
+    if player.rect.center[0] > WIDTH:
+        order_now += 1
+        obstacles_group = pygame.sprite.Group()
+        enemy_group = pygame.sprite.Group()
+        print(pathing[order_now])
+        loc = Location(obstacles_group, enemy_group, pathing[order_now])
+        loc.build()
+        player.move_to(0, 350)
+    if player.rect.center[0] < 0:
+        order_now -= 1
+        obstacles_group = pygame.sprite.Group()
+        enemy_group = pygame.sprite.Group()
+        loc = Location(obstacles_group, enemy_group, pathing[order_now])
+        loc.build()
+        player.move_to(WIDTH - 50, 350)
     obstacles_group.draw(screen)
-
     enemy_group.draw(screen)
     for i in enemy_group.sprites():
         if i.is_alive:

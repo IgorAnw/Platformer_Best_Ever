@@ -87,6 +87,8 @@ while True:
     if pygame.key.get_pressed()[pygame.K_UP]:
         player.move(0)
 
+    if player.rect.y > HEIGHT:
+        player.take_fall_damage()
     player.damage(enemy_group)
     if player.taking_damage(enemy_group):
         pygame.time.set_timer(PLAYER_IMMORTALITY, 1000, loops=1)

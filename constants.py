@@ -12,6 +12,8 @@ JUMPING_SPEED = 12
 
 # настройки лоцкации
 BRICK_SIZE = 20
+X_BRICKS = 48
+Y_BRICKS = 27
 
 # пользовательские ивенты
 ATTACK_END = USEREVENT + 1

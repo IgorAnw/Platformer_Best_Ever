@@ -113,3 +113,7 @@ class Character(pygame.sprite.Sprite):
     def move_to(self, x, y):
         self.rect.x = x
         self.rect.y = y
+    
+    def take_fall_damage(self):
+        self.health_points -= 1
+        self.move_to(0, 350)

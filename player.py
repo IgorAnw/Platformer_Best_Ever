@@ -26,7 +26,7 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = 200
         self.rect.y = 100
         self.y_speed = 0
-        self.n_jump = False
+        self.n_jump = 0
         self.x_ram = self.rect.x
         self.y_ram = self.rect.y
 
@@ -113,7 +113,7 @@ class Character(pygame.sprite.Sprite):
     def move_to(self, x, y):
         self.rect.x = x
         self.rect.y = y
-    
+
     def take_fall_damage(self):
         self.health_points -= 1
-        self.move_to(0, 350)
+        self.move_to(BRICK_SIZE + 5, 350)

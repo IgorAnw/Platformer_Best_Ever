@@ -10,12 +10,11 @@ import random
 
 
 def random_path():
-    path = '0'
+    path = 's'
     n = 5
     for i in range(5):
         path += str(random.randint(1, 5))
-    return path
-
+    return path + 'l'
 
 pygame.init()
 player_group = pygame.sprite.Group()
@@ -31,9 +30,10 @@ is_dead_screen = False
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 player = Character(player_group)
 order_now = 0
+enemies_alive = True
 pathing = random_path()
 loc = Location(obstacles_group, enemy_group, pathing[order_now])
-loc.build()
+loc.build(enemies_alive)
 
 while True:
     screen.fill('black')
@@ -42,28 +42,39 @@ while True:
     else:
         is_dead_screen = True
     if player.rect.center[0] > WIDTH:
+        enemies_alive = True
         order_now += 1
         obstacles_group = pygame.sprite.Group()
         enemy_group = pygame.sprite.Group()
-        print(pathing[order_now])
         loc = Location(obstacles_group, enemy_group, pathing[order_now])
-        loc.build()
-        player.move_to(0, 350)
+        loc.build(enemies_alive)
+        player.move_to(BRICK_SIZE + 5, 350)
     if player.rect.center[0] < 0:
+        enemies_alive = False
         order_now -= 1
         obstacles_group = pygame.sprite.Group()
         enemy_group = pygame.sprite.Group()
         loc = Location(obstacles_group, enemy_group, pathing[order_now])
-        loc.build()
-        player.move_to(WIDTH - 50, 350)
-    obstacles_group.draw(screen)
-    enemy_group.draw(screen)
+        loc.build(enemies_alive)
+        player.move_to(WIDTH - BRICK_SIZE - 5, 350)
+
+    enemies_check = 0
     for i in enemy_group.sprites():
         if i.is_alive:
             i.move()
+            enemies_check += 1
         else:
             i.rect.x = -200
             i.rect.y = -200
+
+    if enemies_check == 0 and enemies_alive:
+        enemies_alive = False
+        obstacles_group = pygame.sprite.Group()
+        loc = Location(obstacles_group, enemy_group, pathing[order_now])
+        loc.build(enemies_alive)
+
+    obstacles_group.draw(screen)
+    enemy_group.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

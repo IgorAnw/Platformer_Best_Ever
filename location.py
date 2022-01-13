@@ -8,15 +8,39 @@ class Location:
         self.obst_group = obst_group
         self.enemy_group = enemy_group
         self.map_text = open('location_' + arg).read().split('\n')
+        self.n_enemies = 0
+        self.enemy_room = False
+        self.arg = arg
 
-    def build(self):
+    def build(self, enemies_alive):
         for i1 in range(Y_BRICKS):
             for i in range(X_BRICKS):
                 if self.map_text[i1][i] == '1':
                     obstacle = Brick(self.obst_group, BRICK_SIZE * i, BRICK_SIZE * i1)
         try:
-            for i in self.map_text[27:]:
-                args = i.split()
-                enemy = Enemy(self.enemy_group, int(args[0]), int(args[1]), int(args[2]), int(args[3]), int(args[4]))
-        except Exception:
+            if enemies_alive:
+                for i in self.map_text[27:]:
+                    args = i.split()
+                    enemy = Enemy(self.enemy_group, int(args[0]), int(args[1]), int(args[2]), int(args[3]), int(args[4]))
+                    self.enemy_room = True
+        except BaseException:
             pass
+
+        if enemies_alive:
+            br0 = Brick(self.obst_group, 0, 340)
+            br1 = Brick(self.obst_group, 0, BRICK_SIZE * 1 + 340)
+            br2 = Brick(self.obst_group, 0, BRICK_SIZE * 2 + 340)
+            br3 = Brick(self.obst_group, 0, BRICK_SIZE * 3 + 340)
+            br4 = Brick(self.obst_group, WIDTH - BRICK_SIZE, BRICK_SIZE * 0 + 340)
+            br5 = Brick(self.obst_group, WIDTH - BRICK_SIZE, BRICK_SIZE * 1 + 340)
+            br6 = Brick(self.obst_group, WIDTH - BRICK_SIZE, BRICK_SIZE * 2 + 340)
+            br7 = Brick(self.obst_group, WIDTH - BRICK_SIZE, BRICK_SIZE * 3 + 340)
+        else:
+            if self.arg != 's':
+                br0 = Brick(self.obst_group, BRICK_SIZE, 420)
+                br1 = Brick(self.obst_group, BRICK_SIZE * 2, 420)
+                br2 = Brick(self.obst_group, BRICK_SIZE * 3, 420)
+            if self.arg != 'l':
+                br3 = Brick(self.obst_group, WIDTH - BRICK_SIZE * 2, 420)
+                br4 = Brick(self.obst_group, WIDTH - BRICK_SIZE * 3, 420)
+                br5 = Brick(self.obst_group, WIDTH - BRICK_SIZE * 4, 420)

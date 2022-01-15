@@ -18,7 +18,7 @@ class Location:
                 if self.map_text[i1][i] == '1':
                     obstacle = Brick(self.obst_group, BRICK_SIZE * i, BRICK_SIZE * i1)
         try:
-            if enemies_alive:
+            if enemies_alive == '1':
                 for i in self.map_text[27:]:
                     args = i.split()
                     enemy = Enemy(self.enemy_group, int(args[0]), int(args[1]), int(args[2]), int(args[3]), int(args[4]))
@@ -26,7 +26,7 @@ class Location:
         except BaseException:
             pass
 
-        if enemies_alive:
+        if enemies_alive == '1':
             br0 = Brick(self.obst_group, 0, 340)
             br1 = Brick(self.obst_group, 0, BRICK_SIZE * 1 + 340)
             br2 = Brick(self.obst_group, 0, BRICK_SIZE * 2 + 340)

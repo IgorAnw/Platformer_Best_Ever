@@ -4,6 +4,8 @@ from constants import WIDTH, HEIGHT
 
 
 class StartScreen:
+    pygame.init()
+
     def __init__(self):
         self.background = pygame.Surface([WIDTH, HEIGHT])
         font = pygame.font.Font(None, 40)
@@ -85,9 +87,6 @@ class DeadScreen:
 
     def activate(self):
         if self.text2 == '=> Restart':
-            pass
-            # тут должна быть функция рестарта
-
+            return 'r'
         if self.text3 == '=> Quit game':
-            pygame.quit()
-            sys.exit()
+            return 'q'

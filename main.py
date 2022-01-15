@@ -33,7 +33,8 @@ def main():
     screen = pygame.display.set_mode([WIDTH, HEIGHT])
     player = Character(player_group)
     order_now = 0
-    enemies_alive = True
+    pathing_enemy_check = ['0', '1', '1', '1', '1', '1', '1']
+    enemies_alive = pathing_enemy_check[order_now]
     pathing = random_path()
     loc = Location(obstacles_group, enemy_group, pathing[order_now])
     loc.build(enemies_alive)
@@ -45,16 +46,16 @@ def main():
         else:
             is_dead_screen = True
         if player.rect.center[0] > WIDTH:
-            enemies_alive = True
             order_now += 1
+            enemies_alive = pathing_enemy_check[order_now]
             obstacles_group = pygame.sprite.Group()
             enemy_group = pygame.sprite.Group()
             loc = Location(obstacles_group, enemy_group, pathing[order_now])
             loc.build(enemies_alive)
             player.move_to(BRICK_SIZE + 5, 350)
         if player.rect.center[0] < 0:
-            enemies_alive = False
             order_now -= 1
+            enemies_alive = pathing_enemy_check[order_now]
             obstacles_group = pygame.sprite.Group()
             enemy_group = pygame.sprite.Group()
             loc = Location(obstacles_group, enemy_group, pathing[order_now])
@@ -70,8 +71,9 @@ def main():
                 i.rect.x = -200
                 i.rect.y = -200
 
-        if enemies_check == 0 and enemies_alive:
-            enemies_alive = False
+        if enemies_check == 0 and enemies_alive == '1':
+            pathing_enemy_check[order_now] = '0'
+            enemies_alive = pathing_enemy_check[order_now]
             obstacles_group = pygame.sprite.Group()
             loc = Location(obstacles_group, enemy_group, pathing[order_now])
             loc.build(enemies_alive)

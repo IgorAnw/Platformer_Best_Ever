@@ -96,6 +96,13 @@ def main():
                     player.jump()
 
                     # Действия с интерфейсом
+                    if is_start_screen:
+                        if start_screen.activate() == 'r':
+                            is_start_screen = False
+                            break
+                        else:
+                            pygame.quit()
+                            sys.exit()
                     if is_dead_screen:
                         if dead_screen.activate() == 'r':
                             restart = True
@@ -103,7 +110,6 @@ def main():
                         else:
                             pygame.quit()
                             sys.exit()
-
                     if is_victory_screen:
                         if victory_screen.activate() == 'r':
                             restart = True
@@ -114,7 +120,6 @@ def main():
 
             # Отвечает за ближнюю атаку
             if event.type == pygame.KEYDOWN:
-                is_start_screen = False
                 if event.key == pygame.K_x:
                     player.attack_start(screen)
                     pygame.time.set_timer(ATTACK_END, 250, loops=1)
@@ -126,9 +131,10 @@ def main():
                 player.not_immortal()
 
             if event.type == pygame.KEYDOWN:
+                if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_start_screen:
+                    start_screen.change()
                 if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_dead_screen:
                     dead_screen.change()
-
                 if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_victory_screen:
                     victory_screen.change()
 

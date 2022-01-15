@@ -27,8 +27,10 @@ def main():
 
     start_screen = StartScreen()
     dead_screen = DeadScreen()
+    victory_screen = VictoryScreen()
     is_start_screen = True
     is_dead_screen = False
+    is_victory_screen = False
 
     screen = pygame.display.set_mode([WIDTH, HEIGHT])
     player = Character(player_group)
@@ -62,6 +64,10 @@ def main():
             loc.build(enemies_alive)
             player.move_to(WIDTH - BRICK_SIZE - 5, 350)
 
+        # проверка для включения экрана победы
+        if pathing_enemy_check[-1] == 0:
+            is_victory_screen = True
+
         enemies_check = 0
         for i in enemy_group.sprites():
             if i.is_alive:
@@ -88,8 +94,18 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_z:
                     player.jump()
+
+                    # Действия с интерфейсом
                     if is_dead_screen:
                         if dead_screen.activate() == 'r':
+                            restart = True
+                            break
+                        else:
+                            pygame.quit()
+                            sys.exit()
+
+                    if is_victory_screen:
+                        if victory_screen.activate() == 'r':
                             restart = True
                             break
                         else:
@@ -113,6 +129,9 @@ def main():
                 if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_dead_screen:
                     dead_screen.change()
 
+                if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_victory_screen:
+                    victory_screen.change()
+
         if pygame.key.get_pressed()[pygame.K_RIGHT]:
             player.move(1)
         if pygame.key.get_pressed()[pygame.K_LEFT]:
@@ -131,6 +150,8 @@ def main():
             start_screen.show(screen)
         if is_dead_screen:
             dead_screen.show(screen)
+        if is_victory_screen:
+            victory_screen.show(screen)
         if restart:
             break
 

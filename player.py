@@ -1,6 +1,7 @@
 import pygame
 from constants import *
 from melee_attack import MeleeAttack
+from projectile import ProjectileAttack
 from enemy import Enemy
 
 
@@ -12,6 +13,8 @@ class Character(pygame.sprite.Sprite):
     # Переменные
     melee_group = pygame.sprite.Group()
     melee_sprite = MeleeAttack(melee_group)
+    projectile_group = pygame.sprite.Group()
+    projectile_sprite = ProjectileAttack(projectile_group)
     screen = None
     is_melee_attacking = False
     direction = 1
@@ -35,7 +38,9 @@ class Character(pygame.sprite.Sprite):
         self.x_ram = self.rect.x
         self.rect.x += WALK_SPEED * direction
 
-    def update(self, inform):
+    def update(self, inform, screen):
+        self.screen = screen
+
         if inform is None:
             self.y_speed += FALLING_SPEED
             self.y_ram = self.rect.y
@@ -76,11 +81,19 @@ class Character(pygame.sprite.Sprite):
         if self.health_points < 1:
             self.is_alive = False
 
+        # методы класса снаряда
+        self.projectile_sprite.update()
+        if self.projectile_sprite.get_existing():
+            self.projectile_group.draw(self.screen)
+
     def damage(self, enemy_group):
-        inform = pygame.sprite.spritecollideany(self.melee_sprite, enemy_group)
+        inform_melee = pygame.sprite.spritecollideany(self.melee_sprite, enemy_group)
+        inform_projectile = pygame.sprite.spritecollideany(self.projectile_sprite, enemy_group)
         self.enemy_group = enemy_group
-        if type(inform) == Enemy:
-            inform.taking_damage()
+        if type(inform_melee) == Enemy:
+            inform_melee.taking_damage()
+        if type(inform_projectile) == Enemy:
+            inform_projectile.taking_damage()
 
     def jump(self):
         if self.n_jump >= 1:
@@ -89,14 +102,11 @@ class Character(pygame.sprite.Sprite):
             self.n_jump -= 1
 
     # Начало и конец атаки героя
-    def attack_start(self, screen):
-        self.screen = screen
+    def attack_start(self):
         self.is_melee_attacking = True
 
     def attack_end(self):
         self.is_melee_attacking = False
-        for i in self.enemy_group.sprites():
-            i.not_immortal()
 
     def taking_damage(self, enemy_group):
         if type(pygame.sprite.spritecollideany(self, enemy_group)) == Enemy:
@@ -117,3 +127,9 @@ class Character(pygame.sprite.Sprite):
     def take_fall_damage(self):
         self.health_points -= 1
         self.move_to(BRICK_SIZE + 5, 350)
+
+    def shoot(self):
+        if self.direction == 1:
+            self.projectile_sprite.appear(self.rect.x + self.rect.width, self.rect.y, self.direction)
+        elif self.direction == -1:
+            self.projectile_sprite.appear(self.rect.x - self.projectile_sprite.rect.width, self.rect.y, self.direction)

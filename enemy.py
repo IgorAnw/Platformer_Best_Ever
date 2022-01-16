@@ -1,5 +1,5 @@
 import pygame
-from constants import FALLING_SPEED
+from constants import *
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -36,12 +36,12 @@ class Enemy(pygame.sprite.Sprite):
         if self.health_points < 1:
             self.is_alive = False
 
-    # Почему то умирает на 1 удар быстрее нужного
     def taking_damage(self):
         if not self.is_immortal:
             self.health_points -= 1
             self.is_immortal = True
             self.image.fill((10, 100, 10))
+            pygame.time.set_timer(ENEMY_IMMORTALITY, 300, loops=1)
 
     def not_immortal(self):
         self.image.fill((0, 255, 0))

@@ -118,17 +118,23 @@ def main():
                             pygame.quit()
                             sys.exit()
 
-            # Отвечает за ближнюю атаку
+            # Отвечает за атаку
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_x:
-                    player.attack_start(screen)
+                    player.attack_start()
                     pygame.time.set_timer(ATTACK_END, 250, loops=1)
+                if event.key == pygame.K_c:
+                    player.shoot()
 
             if event.type == ATTACK_END:
                 player.attack_end()
 
             if event.type == PLAYER_IMMORTALITY:
                 player.not_immortal()
+
+            if event.type == ENEMY_IMMORTALITY:
+                for j in enemy_group.sprites():
+                    j.not_immortal()
 
             if event.type == pygame.KEYDOWN:
                 if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_start_screen:
@@ -150,7 +156,7 @@ def main():
         player.damage(enemy_group)
         if player.taking_damage(enemy_group):
             pygame.time.set_timer(PLAYER_IMMORTALITY, 1000, loops=1)
-        player.update(pygame.sprite.spritecollideany(player, obstacles_group))
+        player.update(pygame.sprite.spritecollideany(player, obstacles_group), screen)
 
         if is_start_screen:
             start_screen.show(screen)

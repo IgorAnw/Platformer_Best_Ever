@@ -19,6 +19,7 @@ def random_path():
 
 def main():
     pygame.init()
+    background_group = pygame.sprite.Group()
     player_group = pygame.sprite.Group()
     obstacles_group = pygame.sprite.Group()
     enemy_group = pygame.sprite.Group()
@@ -39,6 +40,7 @@ def main():
     enemies_alive = pathing_enemy_check[order_now]
     pathing = random_path()
     loc = Location(obstacles_group, enemy_group, pathing[order_now])
+    background_1 = Background(background_group)
     loc.build(enemies_alive)
 
     while True:
@@ -84,6 +86,7 @@ def main():
             loc = Location(obstacles_group, enemy_group, pathing[order_now])
             loc.build(enemies_alive)
 
+        background_group.draw(screen)
         obstacles_group.draw(screen)
         enemy_group.draw(screen)
 

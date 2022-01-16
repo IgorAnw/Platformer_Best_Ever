@@ -6,6 +6,7 @@ from brick import Brick
 from enemy import Enemy
 from Interface import *
 from location import Location
+from background import Background
 import random
 
 

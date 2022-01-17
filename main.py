@@ -27,6 +27,7 @@ def main():
     clock = pygame.time.Clock()
     restart = False
 
+    hp_bar = HpBar()
     start_screen = StartScreen()
     dead_screen = DeadScreen()
     victory_screen = VictoryScreen()
@@ -46,10 +47,6 @@ def main():
 
     while True:
         screen.fill('black')
-        if player.is_alive:
-            player_group.draw(screen)
-        else:
-            is_dead_screen = True
         if player.rect.center[0] > WIDTH:
             order_now += 1
             enemies_alive = pathing_enemy_check[order_now]
@@ -90,6 +87,11 @@ def main():
         background_group.draw(screen)
         obstacles_group.draw(screen)
         enemy_group.draw(screen)
+
+        if player.is_alive:
+            player_group.draw(screen)
+        else:
+            is_dead_screen = True
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -147,13 +149,12 @@ def main():
                     dead_screen.change()
                 if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_victory_screen:
                     victory_screen.change()
-
+        if pygame.key.get_pressed()[pygame.K_UP]:
+            player.move(0)
         if pygame.key.get_pressed()[pygame.K_RIGHT]:
             player.move(1)
         if pygame.key.get_pressed()[pygame.K_LEFT]:
             player.move(-1)
-        if pygame.key.get_pressed()[pygame.K_UP]:
-            player.move(0)
 
         if player.rect.y > HEIGHT:
             player.take_fall_damage()
@@ -162,6 +163,8 @@ def main():
             pygame.time.set_timer(PLAYER_IMMORTALITY, 1000, loops=1)
         player.update(pygame.sprite.spritecollideany(player, obstacles_group), screen)
 
+        # интерфейс
+        hp_bar.draw(screen, player.health_points)
         if is_start_screen:
             start_screen.show(screen)
         if is_dead_screen:

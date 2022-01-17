@@ -192,3 +192,13 @@ class VictoryScreen:
             return 'r'
         if self.text3 == '=> Quit game':
             return 'q'
+
+
+class HpBar:
+    def __init__(self):
+        self.image = pygame.Surface([15, 30])
+        self.image.fill(pygame.Color('red'))
+
+    def draw(self, screen, hp):
+        for i in range(hp):
+            screen.blit(self.image, (10 + 18 * i, 10))

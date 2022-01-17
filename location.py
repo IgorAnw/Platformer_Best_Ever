@@ -36,10 +36,9 @@ class Location:
             br6 = Brick(self.obst_group, WIDTH - BRICK_SIZE, BRICK_SIZE * 2 + 340)
             br7 = Brick(self.obst_group, WIDTH - BRICK_SIZE, BRICK_SIZE * 3 + 340)
         else:
-            if self.arg != 's':
-                br0 = Brick(self.obst_group, BRICK_SIZE, 420)
-                br1 = Brick(self.obst_group, BRICK_SIZE * 2, 420)
-                br2 = Brick(self.obst_group, BRICK_SIZE * 3, 420)
+            br0 = Brick(self.obst_group, BRICK_SIZE, 420)
+            br1 = Brick(self.obst_group, BRICK_SIZE * 2, 420)
+            br2 = Brick(self.obst_group, BRICK_SIZE * 3, 420)
             if self.arg != 'l':
                 br3 = Brick(self.obst_group, WIDTH - BRICK_SIZE * 2, 420)
                 br4 = Brick(self.obst_group, WIDTH - BRICK_SIZE * 3, 420)

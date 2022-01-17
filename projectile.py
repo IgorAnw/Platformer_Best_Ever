@@ -2,8 +2,8 @@ import pygame
 
 
 class ProjectileAttack(pygame.sprite.Sprite):
-    image = pygame.Surface([70, 50])
-    image.fill(pygame.Color('yellow'))
+    image = pygame.image.load('images/fireball_right.png')
+    image.set_colorkey('white')
 
     def __init__(self, group):
         super().__init__(group)
@@ -13,6 +13,12 @@ class ProjectileAttack(pygame.sprite.Sprite):
         self.cool_down = 0
 
     def appear(self, x, y, direction):
+        if direction == 1:
+            self.image = pygame.image.load('images/fireball_right.png')
+            self.image.set_colorkey('white')
+        if direction == -1:
+            self.image = pygame.image.load('images/fireball_left.png')
+            self.image.set_colorkey('white')
         if self.cool_down <= 0:
             self.rect.x = x
             self.rect.y = y

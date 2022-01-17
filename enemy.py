@@ -4,7 +4,7 @@ from constants import *
 
 class Enemy(pygame.sprite.Sprite):
     # внешний вид
-    image = pygame.Surface([50, 50])
+    image = pygame.Surface([50, 30])
     image.fill(pygame.Color('green'))
 
     # перемнные
@@ -23,6 +23,12 @@ class Enemy(pygame.sprite.Sprite):
         self.time = time
         self.rear = False
         self.timer = 0
+        self.cur_frame = 0
+        self.running_timer = 0
+        self.frames_move_r = []
+        self.frames_move_l = []
+        self.cut_sheet_r(pygame.image.load('images/enemy_move_right.png'), 2, 1)
+        self.cut_sheet_l(pygame.image.load('images/enemy_move_left.png'), 2, 1)
 
     def move(self):
         self.timer += 1
@@ -32,7 +38,16 @@ class Enemy(pygame.sprite.Sprite):
             self.speed_y *= -1
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
-        
+        if self.running_timer >= 5 and not self.is_immortal:
+            if self.speed_x >= 0:
+                self.image = self.frames_move_r[self.cur_frame]
+            if self.speed_x < 0:
+                self.image = self.frames_move_l[self.cur_frame]
+            self.image.set_colorkey('white')
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames_move_r)
+            self.running_timer = 0
+        self.running_timer += 1
+
         if self.health_points < 1:
             self.is_alive = False
 
@@ -40,9 +55,30 @@ class Enemy(pygame.sprite.Sprite):
         if not self.is_immortal:
             self.health_points -= 1
             self.is_immortal = True
-            self.image.fill((10, 100, 10))
+            if self.speed_x < 0 :
+                self.image = pygame.image.load('images/enemy_take_damage_l.png')
+            elif self.speed_x >= 0:
+                self.image = pygame.image.load('images/enemy_take_damage_r.png')
+            self.image.set_colorkey('white')
             pygame.time.set_timer(ENEMY_IMMORTALITY, 300, loops=1)
 
     def not_immortal(self):
-        self.image.fill((0, 255, 0))
         self.is_immortal = False
+
+    def cut_sheet_r(self, sheet, columns, rows):
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
+                                sheet.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames_move_r.append(sheet.subsurface(pygame.Rect(
+                    frame_location, self.rect.size)))
+
+    def cut_sheet_l(self, sheet, columns, rows):
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
+                                sheet.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames_move_l.append(sheet.subsurface(pygame.Rect(
+                    frame_location, self.rect.size)))

@@ -1,4 +1,5 @@
 import pygame
+import random
 from constants import *
 
 
@@ -50,15 +51,27 @@ class Boss(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__(group)
         self.range_attack = BossProjectile(group)
+        self.range_attack1 = BossProjectile(group)
         self.rect = self.image.get_rect()
         self.rect.x = WIDTH - 100
         self.rect.y = 0
+        self.delay1 = 0
 
     def shoot(self, y):
         self.range_attack.appear(y)
 
+    def shoot1(self, y):
+        self.range_attack1.appear(y)
+
+    def shoot2(self, y):
+        self.range_attack1.appear(y)
+
     def update(self, player, screen):
         self.shoot(player.rect.y)
+        if self.delay1 >= 90:
+            self.shoot1(random.randint(0, 470))
+        else:
+            self.delay1 += 1
 
         if self.health_points < 1:
             self.is_alive = False

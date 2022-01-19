@@ -175,6 +175,8 @@ class Character(pygame.sprite.Sprite):
 
     def attack_end(self):
         self.is_melee_attacking = False
+        self.melee_sprite.rect.x = -200
+        self.melee_sprite.rect.y = -200
 
     def taking_damage(self, enemy_group):
         if type(pygame.sprite.spritecollideany(self, enemy_group)) == Enemy \

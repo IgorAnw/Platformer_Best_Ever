@@ -16,8 +16,8 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, group, x, y, speed_x, speed_y, time):
         super().__init__(group)
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.x = x
+        self.y = y
         self.speed_x = speed_x
         self.speed_y = speed_y
         self.time = time
@@ -29,7 +29,11 @@ class Enemy(pygame.sprite.Sprite):
         self.frames_move_l = []
         self.cut_sheet_r(pygame.image.load('images/enemy_move_right.png'), 2, 1)
         self.cut_sheet_l(pygame.image.load('images/enemy_move_left.png'), 2, 1)
+        self.move_to()
 
+    def move_to(self):
+        self.rect.x = self.x
+        self.rect.y = self.y
     def move(self):
         self.timer += 1
         if self.timer == self.time:

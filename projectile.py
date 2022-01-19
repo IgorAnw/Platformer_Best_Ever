@@ -24,7 +24,7 @@ class ProjectileAttack(pygame.sprite.Sprite):
             self.rect.y = y
             self.does_exist = True
             self.direction = direction
-            self.cool_down = 300
+            self.cool_down = 180
 
     def update(self):
         if self.cool_down >= 0:

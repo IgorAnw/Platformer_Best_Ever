@@ -3,6 +3,7 @@ from constants import *
 from melee_attack import MeleeAttack
 from projectile import ProjectileAttack
 from enemy import Enemy
+from boss import Boss, BossProjectile
 
 
 class Character(pygame.sprite.Sprite):
@@ -26,8 +27,8 @@ class Character(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__(group)
         self.rect = self.image.get_rect()
-        self.rect.x = 200
-        self.rect.y = 100
+        self.rect.x = 1000
+        self.rect.y = 350
         self.y_speed = 0
         self.n_jump = 0
         self.x_ram = self.rect.x
@@ -157,9 +158,9 @@ class Character(pygame.sprite.Sprite):
         inform_melee = pygame.sprite.spritecollideany(self.melee_sprite, enemy_group)
         inform_projectile = pygame.sprite.spritecollideany(self.projectile_sprite, enemy_group)
         self.enemy_group = enemy_group
-        if type(inform_melee) == Enemy:
+        if type(inform_melee) == Enemy or type(inform_melee) == Boss:
             inform_melee.taking_damage()
-        if type(inform_projectile) == Enemy:
+        if type(inform_projectile) == Enemy or type(inform_projectile) == Boss:
             inform_projectile.taking_damage()
 
     def jump(self):
@@ -176,7 +177,9 @@ class Character(pygame.sprite.Sprite):
         self.is_melee_attacking = False
 
     def taking_damage(self, enemy_group):
-        if type(pygame.sprite.spritecollideany(self, enemy_group)) == Enemy:
+        if type(pygame.sprite.spritecollideany(self, enemy_group)) == Enemy \
+                or type(pygame.sprite.spritecollideany(self, enemy_group)) == Boss \
+                or type(pygame.sprite.spritecollideany(self, enemy_group)) == BossProjectile:
             if not self.is_immortal:
                 self.health_points -= 1
                 self.is_immortal = True
@@ -184,7 +187,6 @@ class Character(pygame.sprite.Sprite):
 
     def not_immortal(self):
         self.is_immortal = False
-        self.image.fill(pygame.Color('white'))
 
     def move_to(self, x, y):
         self.rect.x = x

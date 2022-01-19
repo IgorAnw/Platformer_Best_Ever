@@ -1,6 +1,7 @@
 from brick import Brick
 from constants import *
 from enemy import Enemy
+from boss import Boss
 
 
 class Location:
@@ -25,7 +26,8 @@ class Location:
                     self.enemy_room = True
         except BaseException:
             pass
-
+        if self.arg == 'l':
+            boss = Boss(self.enemy_group)
         if enemies_alive == '1':
             br0 = Brick(self.obst_group, 0, 340)
             br1 = Brick(self.obst_group, 0, BRICK_SIZE * 1 + 340)
@@ -36,9 +38,10 @@ class Location:
             br6 = Brick(self.obst_group, WIDTH - BRICK_SIZE, BRICK_SIZE * 2 + 340)
             br7 = Brick(self.obst_group, WIDTH - BRICK_SIZE, BRICK_SIZE * 3 + 340)
         else:
-            br0 = Brick(self.obst_group, BRICK_SIZE, 420)
-            br1 = Brick(self.obst_group, BRICK_SIZE * 2, 420)
-            br2 = Brick(self.obst_group, BRICK_SIZE * 3, 420)
+            if self.arg != 's':
+                br0 = Brick(self.obst_group, BRICK_SIZE, 420)
+                br1 = Brick(self.obst_group, BRICK_SIZE * 2, 420)
+                br2 = Brick(self.obst_group, BRICK_SIZE * 3, 420)
             if self.arg != 'l':
                 br3 = Brick(self.obst_group, WIDTH - BRICK_SIZE * 2, 420)
                 br4 = Brick(self.obst_group, WIDTH - BRICK_SIZE * 3, 420)

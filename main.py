@@ -7,6 +7,8 @@ from enemy import Enemy
 from Interface import *
 from location import Location
 from background import Background
+from boss import Boss
+from boss import BossProjectile
 import random
 
 
@@ -44,6 +46,7 @@ def main():
     loc = Location(obstacles_group, enemy_group, pathing[order_now])
     background_1 = Background(background_group)
     loc.build(enemies_alive)
+    player.move_to(80, 350)
 
     while True:
         screen.fill('black')
@@ -54,7 +57,7 @@ def main():
             enemy_group = pygame.sprite.Group()
             loc = Location(obstacles_group, enemy_group, pathing[order_now])
             loc.build(enemies_alive)
-            player.move_to(BRICK_SIZE + 5, 350)
+            player.move_to(BRICK_SIZE + 60, 350)
         if player.rect.center[0] < 0:
             order_now -= 1
             enemies_alive = pathing_enemy_check[order_now]
@@ -62,16 +65,22 @@ def main():
             enemy_group = pygame.sprite.Group()
             loc = Location(obstacles_group, enemy_group, pathing[order_now])
             loc.build(enemies_alive)
-            player.move_to(WIDTH - BRICK_SIZE - 5, 350)
+            player.move_to(WIDTH - BRICK_SIZE - 60, 350)
 
         # проверка для включения экрана победы
-        if pathing_enemy_check[-1] == 0:
+        if pathing_enemy_check[-1] == '0':
             is_victory_screen = True
 
         enemies_check = 0
+        updating_boss = False
         for i in enemy_group.sprites():
-            if i.is_alive:
+            if isinstance(i, BossProjectile):
+                i.update()
+            elif i.is_alive and isinstance(i, Enemy):
                 i.move()
+                enemies_check += 1
+            elif isinstance(i, Boss) and i.is_alive:
+                updating_boss = True
                 enemies_check += 1
             else:
                 i.rect.x = -200
@@ -87,6 +96,9 @@ def main():
         background_group.draw(screen)
         obstacles_group.draw(screen)
         enemy_group.draw(screen)
+
+        if updating_boss:
+            enemy_group.sprites()[0].update(player, screen)
 
         if player.is_alive:
             player_group.draw(screen)

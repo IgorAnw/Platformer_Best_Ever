@@ -8,7 +8,7 @@ class Location:
     def __init__(self, obst_group, enemy_group, arg):
         self.obst_group = obst_group
         self.enemy_group = enemy_group
-        self.map_text = open('location_' + arg).read().split('\n')
+        self.map_text = open('locations/location_' + arg).read().split('\n')
         self.n_enemies = 0
         self.enemy_room = False
         self.arg = arg

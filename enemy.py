@@ -34,6 +34,7 @@ class Enemy(pygame.sprite.Sprite):
     def move_to(self):
         self.rect.x = self.x
         self.rect.y = self.y
+
     def move(self):
         self.timer += 1
         if self.timer == self.time:

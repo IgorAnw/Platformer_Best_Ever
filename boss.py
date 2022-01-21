@@ -97,7 +97,6 @@ class Boss(pygame.sprite.Sprite):
             self.health_points -= 1
             self.is_immortal = True
             pygame.time.set_timer(ENEMY_IMMORTALITY, 300, loops=1)
-            print(self.health_points)
 
     def not_immortal(self):
         self.is_immortal = False

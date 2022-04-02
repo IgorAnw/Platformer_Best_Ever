@@ -1,36 +1,194 @@
 import pygame
 import sys
 from player import Character
-from constants import WIDTH, HEIGHT
+from constants import *
+from brick import Brick
+from enemy import Enemy
+from Interface import *
+from location import Location
+from background import Background
+from boss import Boss
+from boss import BossProjectile
+import random
 
-player_group = pygame.sprite.Group()
-obstacles_group = pygame.sprite.Group()
-clock = pygame.time.Clock()
 
-pygame.init()
-screen = pygame.display.set_mode([WIDTH, HEIGHT])
-player = Character(player_group)
+def random_path():
+    path = 's'
+    n = 5
+    for i in range(5):
+        path += str(random.randint(1, 5))
+    return path + 'l'
+
+
+def main():
+    pygame.init()
+    background_group = pygame.sprite.Group()
+    player_group = pygame.sprite.Group()
+    obstacles_group = pygame.sprite.Group()
+    enemy_group = pygame.sprite.Group()
+    clock = pygame.time.Clock()
+    restart = False
+
+    hp_bar = HpBar()
+    start_screen = StartScreen()
+    dead_screen = DeadScreen()
+    victory_screen = VictoryScreen()
+    is_start_screen = True
+    is_dead_screen = False
+    is_victory_screen = False
+
+    screen = pygame.display.set_mode([WIDTH, HEIGHT])
+    player = Character(player_group)
+    order_now = 0
+    pathing_enemy_check = ['0', '1', '1', '1', '1', '1', '1']
+    enemies_alive = pathing_enemy_check[order_now]
+    pathing = random_path()
+    loc = Location(obstacles_group, enemy_group, pathing[order_now])
+    background_1 = Background(background_group)
+    loc.build(enemies_alive)
+    player.move_to(80, 350)
+
+    while True:
+        screen.fill('black')
+        if player.rect.center[0] > WIDTH:
+            order_now += 1
+            enemies_alive = pathing_enemy_check[order_now]
+            obstacles_group = pygame.sprite.Group()
+            enemy_group = pygame.sprite.Group()
+            loc = Location(obstacles_group, enemy_group, pathing[order_now])
+            loc.build(enemies_alive)
+            player.move_to(BRICK_SIZE + 60, 350)
+        if player.rect.center[0] < 0:
+            order_now -= 1
+            enemies_alive = pathing_enemy_check[order_now]
+            obstacles_group = pygame.sprite.Group()
+            enemy_group = pygame.sprite.Group()
+            loc = Location(obstacles_group, enemy_group, pathing[order_now])
+            loc.build(enemies_alive)
+            player.move_to(WIDTH - BRICK_SIZE - 60, 350)
+
+        # проверка для включения экрана победы
+        if pathing_enemy_check[-1] == '0':
+            is_victory_screen = True
+
+        enemies_check = 0
+        updating_boss = False
+        for i in enemy_group.sprites():
+            if isinstance(i, BossProjectile):
+                i.update()
+            elif i.is_alive and isinstance(i, Enemy):
+                i.move()
+                enemies_check += 1
+            elif isinstance(i, Boss) and i.is_alive:
+                updating_boss = True
+                enemies_check += 1
+            else:
+                i.rect.x = -200
+                i.rect.y = -200
+
+        if enemies_check == 0 and enemies_alive == '1':
+            pathing_enemy_check[order_now] = '0'
+            enemies_alive = pathing_enemy_check[order_now]
+            obstacles_group = pygame.sprite.Group()
+            loc = Location(obstacles_group, enemy_group, pathing[order_now])
+            loc.build(enemies_alive)
+
+        background_group.draw(screen)
+        obstacles_group.draw(screen)
+        enemy_group.draw(screen)
+
+        if updating_boss:
+            enemy_group.sprites()[0].update(player, screen)
+
+        if player.is_alive:
+            player_group.draw(screen)
+        else:
+            is_dead_screen = True
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_z:
+                    player.jump()
+
+                    # Действия с интерфейсом
+                    if is_start_screen:
+                        if start_screen.activate() == 'r':
+                            is_start_screen = False
+                            break
+                        else:
+                            pygame.quit()
+                            sys.exit()
+                    if is_dead_screen:
+                        if dead_screen.activate() == 'r':
+                            restart = True
+                            break
+                        else:
+                            pygame.quit()
+                            sys.exit()
+                    if is_victory_screen:
+                        if victory_screen.activate() == 'r':
+                            restart = True
+                            break
+                        else:
+                            pygame.quit()
+                            sys.exit()
+
+            # Отвечает за атаку
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_x:
+                    player.attack_start()
+                    pygame.time.set_timer(ATTACK_END, 250, loops=1)
+                if event.key == pygame.K_c:
+                    player.shoot()
+
+            if event.type == ATTACK_END:
+                player.attack_end()
+
+            if event.type == PLAYER_IMMORTALITY:
+                player.not_immortal()
+
+            if event.type == ENEMY_IMMORTALITY:
+                for j in enemy_group.sprites():
+                    j.not_immortal()
+
+            if event.type == pygame.KEYDOWN:
+                if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_start_screen:
+                    start_screen.change()
+                if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_dead_screen:
+                    dead_screen.change()
+                if (event.key == pygame.K_UP or event.key == pygame.K_DOWN) and is_victory_screen:
+                    victory_screen.change()
+        if pygame.key.get_pressed()[pygame.K_UP]:
+            player.move(0)
+        if pygame.key.get_pressed()[pygame.K_RIGHT]:
+            player.move(1)
+        if pygame.key.get_pressed()[pygame.K_LEFT]:
+            player.move(-1)
+
+        if player.rect.y > HEIGHT:
+            player.take_fall_damage()
+        player.damage(enemy_group)
+        if player.taking_damage(enemy_group):
+            pygame.time.set_timer(PLAYER_IMMORTALITY, 1000, loops=1)
+        player.update(pygame.sprite.spritecollideany(player, obstacles_group), screen)
+
+        # интерфейс
+        hp_bar.draw(screen, player.health_points)
+        if is_start_screen:
+            start_screen.show(screen)
+        if is_dead_screen:
+            dead_screen.show(screen)
+        if is_victory_screen:
+            victory_screen.show(screen)
+        if restart:
+            break
+
+        clock.tick(FPS)
+        pygame.display.flip()
+
 
 while True:
-    screen.fill('#000000')
-    player_group.draw(screen)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-    if pygame.key.get_pressed()[pygame.K_RIGHT]:
-        player.move(1)
-    if pygame.key.get_pressed()[pygame.K_LEFT]:
-        player.move(-1)
-    if pygame.key.get_pressed()[pygame.K_z]:
-        player.jump()
-
-    if pygame.sprite.spritecollideany(player, obstacles_group) is None:
-        player.fall()
-    elif pygame.sprite.spritecollideany(player, obstacles_group).rect.top == player.rect.bottom:
-        pass
-
-    clock.tick(60)
-    pygame.display.flip()
+    main()
